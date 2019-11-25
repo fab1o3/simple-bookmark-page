@@ -71,7 +71,7 @@
                 },
                 loadBookmarks: function () {
                     $.get(this.jsonStorage, (data) => {
-                        this.bookmarks = data.bookmarks;
+                        this.bookmarks = data;
                     });
                 },
                 deleteBookmark: function (index) {
