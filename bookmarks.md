@@ -1,10 +1,8 @@
-<p><a href="
-[AlternativeTo](https://alternativeto.net/">AlternativeTo</a></p>
-<blockquote>
+
+[AlternativeTo](https://alternativeto.net/<blockquote>
 <p>)
-</p></blockquote><blockquote>
-<p>Written with <a href="[StackEdit](https://stackedit.io/">StackEdit</a>.</p>
-</blockquote>
+</p></blockquote>Written with [StackEdit](https://stackedit.io
 
-).
-
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMjg0OTQ3NjkwXX0=
+-->
