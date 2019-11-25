@@ -18,9 +18,26 @@
             <h1 class="title">
                 Bookmarks
             </h1>
+            <div class="columns">
+                <div class="column">
+                    <input class="input" type="url" placeholder="Insert storage" v-model="jsonStorage">
+                </div>
+                <div class="column">
+                    <button class="button" v-on:click="loadBookmarks()">Load</button>
+                </div>
+            </div>
+            <div class="columns" v-if="bookmarks.length">
+                <div class="column">
+                    <input class="input" type="url" placeholder="Insert bookmark" v-model="newBookmark">
+                </div>
+                <div class="column">
+                    <button class="button" v-on:click="addBookmark()">New</button>
+                </div>
+            </div>
             <ul id="bookmarks" v-for="(item, index) in bookmarks">
                 <li>
                     <a v-bind:href="item.url" target="_blank">{{ item.name }}</a>
+                    <a class="delete" v-on:click="deleteBookmark(index)"></a>
                 </li>
             </ul>
         </div>
@@ -29,11 +46,48 @@
         var app = new Vue({
             el: '#app',
             data: {
-                bookmarks: [{
-                    "name": "https://alternativeto.net/",
-                    "url": "https://alternativeto.net/"
-                }]
+                jsonStorage: '',
+                bookmarks: [],
+                newBookmark: ''
             },
+            mounted: function () {
+            },
+            methods: {
+                addBookmark: function () {
+                    newBookmark = {};
+                    newBookmark.url = this.newBookmark;
+                    newBookmark.name = this.newBookmark;
+                    this.bookmarks.push(newBookmark);
+                    $.ajax({
+                        url: this.jsonStorage,
+                        type: "PUT",
+                        data: this.bookmarks,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data, textStatus, jqXHR) {
+                            console.log('success');
+                        }
+                    });
+                },
+                loadBookmarks: function () {
+                    $.get(this.jsonStorage, (data) => {
+                        this.bookmarks = data.bookmarks;
+                    });
+                },
+                deleteBookmark: function (index) {
+                    this.bookmarks.splice(index, 1);
+                    $.ajax({
+                        url: this.jsonStorage,
+                        type: "PUT",
+                        data: this.bookmarks,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data, textStatus, jqXHR) {
+                            console.log('success');
+                        }
+                    });
+                }
+            }
         });
 
 
