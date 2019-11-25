@@ -61,7 +61,7 @@
                     $.ajax({
                         url: this.jsonStorage,
                         type: "PUT",
-                        data: this.bookmarks,
+                        data: JSON.stringify(this.bookmarks),
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (data, textStatus, jqXHR) {
@@ -79,7 +79,7 @@
                     $.ajax({
                         url: this.jsonStorage,
                         type: "PUT",
-                        data: this.bookmarks,
+                        data: JSON.stringify(this.bookmarks),
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (data, textStatus, jqXHR) {
