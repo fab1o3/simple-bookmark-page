@@ -46,7 +46,7 @@
         var app = new Vue({
             el: '#app',
             data: {
-                jsonStorage: '',
+                jsonStorage: localStorage.getItem('jsonStorage'),
                 bookmarks: [],
                 newBookmark: ''
             },
@@ -70,6 +70,7 @@
                     });
                 },
                 loadBookmarks: function () {
+                    localStorage.setItem('jsonStorage')
                     $.get(this.jsonStorage, (data) => {
                         this.bookmarks = data;
                     });
