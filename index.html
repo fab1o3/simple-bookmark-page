@@ -70,7 +70,7 @@
                     });
                 },
                 loadBookmarks: function () {
-                    localStorage.setItem('jsonStorage')
+                    localStorage.setItem('jsonStorage', this.jsonStorage);
                     $.get(this.jsonStorage, (data) => {
                         this.bookmarks = data;
                     });
