@@ -73,7 +73,7 @@
                     localStorage.setItem('spb_jsonStorage', this.jsonStorage);
                     $.get(this.jsonStorage, (data) => {
                         if (typeof data === 'string' || data instanceof String) {
-                            JSON.parse(data);
+                            data = JSON.parse(data);
                         } 
                         this.bookmarks = data;
                     });
