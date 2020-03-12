@@ -70,7 +70,7 @@
                     });
                 },
                 loadBookmarks: function () {
-                    localStorage.setItem('spb_jsonStorage', this.jsonStorage);
+                    localStorage.setItem('sbp_jsonStorage', this.jsonStorage);
                     $.get(this.jsonStorage, (data) => {
                         if (typeof data === 'string' || data instanceof String) {
                             data = JSON.parse(data);
