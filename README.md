@@ -1,1 +1,1 @@
-Simple bookmark page that syncs with json storage
+Simple bookmark page that syncs with local storage
