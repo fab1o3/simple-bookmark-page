@@ -42,6 +42,9 @@
                 newBookmark: ''
             },
             mounted: function () {
+                if(!localStorage.getItem("sbp_jsonStorage")) {
+                    this.bookmarks = [];
+                }
             },
             methods: {
                 addBookmark: function () {
