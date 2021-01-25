@@ -18,7 +18,7 @@
             <h1 class="title">
                 Bookmarks
             </h1>
-            <div class="columns" v-if="bookmarks">
+            <div class="columns">
                 <div class="column">
                     <input class="input" type="url" placeholder="Insert bookmark" v-model="newBookmark">
                 </div>
@@ -49,9 +49,11 @@
                     newBookmark.url = this.newBookmark;
                     newBookmark.name = this.newBookmark;
                     this.bookmarks.push(newBookmark);
+                    localStorage.setItem("sbp_jsonStorage", JSON.stringify(this.bookmarks));
                 },
                 deleteBookmark: function (index) {
                     this.bookmarks.splice(index, 1);
+                    localStorage.setItem("sbp_jsonStorage", JSON.stringify(this.bookmarks));
                 }
             }
         });
