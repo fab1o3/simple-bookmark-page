@@ -44,7 +44,8 @@
             el: '#app',
             data: {
                 bookmarks: JSON.parse(localStorage["sbp_jsonStorage"]),
-                newBookmark: ''
+                newBookmark: '',
+                category: ''
             },
             computed: {
                 sortedBookmarks: function() {
