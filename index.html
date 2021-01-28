@@ -26,7 +26,7 @@
                     <button class="button" v-on:click="addBookmark()">New</button>
                 </div>
             </div>
-            <ul id="bookmarks" v-for="(item, index) in bookmarks">
+            <ul id="bookmarks" v-for="(item, index) in sortedBookmarks">
                 <li>
                     <a v-bind:href="item.url" target="_blank">{{ item.name }}</a>
                     <a class="delete" v-on:click="deleteBookmark(index)"></a>
@@ -40,6 +40,19 @@
             data: {
                 bookmarks: JSON.parse(localStorage["sbp_jsonStorage"]),
                 newBookmark: ''
+            },
+            computed: {
+                sortedBookmarks: function() {
+                    function compare(a, b) {
+                        if (a.name < b.name)
+                            return -1;
+                        if (a.name > b.name)
+                            return 1;
+                        return 0;
+                    }
+
+                    return this.bookmarks.sort(compare);
+                }
             },
             mounted: function () {
                 if(!localStorage.getItem("sbp_jsonStorage")) {
