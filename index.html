@@ -50,7 +50,11 @@
             computed: {
                 sortedBookmarks: function() {
                     function compare(a, b) {
-                        return a.category.localeCompare(b.category) || b.name - a.name;
+                        if (a.category) {
+                            return a.category.localeCompare(b.category);
+                        } else {
+                            return a.name.localeCompare(b.name);
+                        }
                     }
 
                     return this.bookmarks.sort(compare);
