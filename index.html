@@ -54,7 +54,7 @@
             computed: {
                 sortedBookmarks: function() {
                     function compare(a, b) {
-                    	return a.category.localeCompare(b.category) || a.name.localeCompare(b.name) || return a.url.localeCompare(b.url);
+                    	return a.category.localeCompare(b.category) || a.name.localeCompare(b.name) || a.url.localeCompare(b.url);
                     }
 
                     return this.bookmarks.sort(compare);
