@@ -55,11 +55,11 @@
                 sortedBookmarks: function() {
                     function compare(a, b) {
 						[a, b].forEach(function(obj) {
-  							['category', 'name', 'url'].foreach(item => { 
+  							['category', 'name', 'url'].forEach(item => { 
     							if(obj[item] === undefined) {
       								obj[item] = '';
     							}
-  							}
+  							});
 						});
                     	return a.category.localeCompare(b.category) || a.name.localeCompare(b.name) || a.url.localeCompare(b.url);
                     }
