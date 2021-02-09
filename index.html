@@ -54,6 +54,13 @@
             computed: {
                 sortedBookmarks: function() {
                     function compare(a, b) {
+						[a, b].forEach(function(obj) {
+  							for(var i in obj) { 
+    							if(obj[i] === undefined) {
+      								obj[i] = '';
+    							}
+  							}
+						});
                     	return a.category.localeCompare(b.category) || a.name.localeCompare(b.name) || a.url.localeCompare(b.url);
                     }
 
