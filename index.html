@@ -55,7 +55,7 @@
                 sortedBookmarks: function() {
                     function compare(a, b) {
 						[a, b].forEach(function(obj) {
-  							for(var i in obj) { 
+  							for(var i in ['category', 'name', 'url']) { 
     							if(obj[i] === undefined) {
       								obj[i] = '';
     							}
