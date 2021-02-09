@@ -19,13 +19,18 @@
                 Bookmarks
             </h1>
             <div class="columns">
-                <div class="column">
-                    <input class="input" placeholder="Category" v-model="category">
+                <div class="column is-half">
+                    <input class="input" placeholder="Category" v-model="newBookmark.category">
                 </div>
             </div>
             <div class="columns">
+				<div class="column is-half">
+					<input class="input" placeholder="Name" v-model="newBookmark.name" />
+			    </div>
+			</div>
+            <div class="columns">
                 <div class="column">
-                    <input class="input" type="url" placeholder="Insert bookmark" v-model="newBookmark">
+                    <input class="input" type="url" placeholder="Insert bookmark" v-model="newBookmark.url">
                 </div>
                 <div class="column">
                     <button class="button" v-on:click="addBookmark()">New</button>
@@ -33,7 +38,7 @@
             </div>   
             <ul id="bookmarks" v-for="(item, index) in sortedBookmarks">
                 <li>
-                    <a v-bind:href="item.url" target="_blank">{{ item.name }}</a>
+                    <a v-bind:href="item.url" target="_blank" class="has-tooltip-bottom" v-bind:data-tooltip="item.category">{{ item.name ? item.name : item.url }}</a>
                     <a class="delete" v-on:click="deleteBookmark(index)"></a>
                 </li>
             </ul>
@@ -44,16 +49,17 @@
             el: '#app',
             data: {
                 bookmarks: JSON.parse(localStorage["sbp_jsonStorage"]),
-                newBookmark: '',
-                category: ''
+                newBookmark: {}
             },
             computed: {
                 sortedBookmarks: function() {
                     function compare(a, b) {
                         if (a.category !== undefined && b.category !== undefined && a.category != b.category) {
                             return a.category.localeCompare(b.category);
-                        } else {
+                        } else if (a.name !== undefined && b.name !== undefined) {
                             return a.name.localeCompare(b.name);
+                        } else {
+                            return a.url.localeCompare(b.url);
                         }
                     }
 
@@ -61,22 +67,20 @@
                 }
             },
             mounted: function () {
-                if(!localStorage.getItem("sbp_jsonStorage")) {
-                    this.bookmarks = [];
+                 if (localStorage["bookmarks"]) {
+                    this.bookmarks = JSON.parse(localStorage["bookmarks"]);
+                } else {
+                    localStorage.setItem("bookmarks", []);
                 }
             },
             methods: {
                 addBookmark: function () {
-                    newBookmark = {};
-                    newBookmark.url = this.newBookmark;
-                    newBookmark.name = this.newBookmark;
-                    newBookmark.category = this.category;
-                    this.bookmarks.push(newBookmark);
-                    localStorage.setItem("sbp_jsonStorage", JSON.stringify(this.bookmarks));
+                    this.bookmarks.push(Object.assign({}, this.newBookmark));
+                    localStorage.setItem("bookmarks", JSON.stringify(this.bookmarks));
                 },
                 deleteBookmark: function (index) {
                     this.bookmarks.splice(index, 1);
-                    localStorage.setItem("sbp_jsonStorage", JSON.stringify(this.bookmarks));
+                    localStorage.setItem("bookmarks", JSON.stringify(this.bookmarks));
                 }
             }
         });
