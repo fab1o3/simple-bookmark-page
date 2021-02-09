@@ -54,13 +54,7 @@
             computed: {
                 sortedBookmarks: function() {
                     function compare(a, b) {
-                        if (a.category !== undefined && b.category !== undefined && a.category != b.category) {
-                            return a.category.localeCompare(b.category);
-                        } else if (a.name !== undefined && b.name !== undefined) {
-                            return a.name.localeCompare(b.name);
-                        } else {
-                            return a.url.localeCompare(b.url);
-                        }
+                    	return a.category.localeCompare(b.category) || a.name.localeCompare(b.name) || return a.url.localeCompare(b.url);
                     }
 
                     return this.bookmarks.sort(compare);
