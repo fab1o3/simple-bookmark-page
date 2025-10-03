@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bookmarks</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css" />
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-tooltip@3.0.2/dist/css/bulma-tooltip.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-tooltip@3.0.2/dist/css/bulma-tooltip.min.css" />
 
-	<script src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/sjcl@1.0.8/sjcl.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/axios@1.12.2/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.23.0/dist/sweetalert2.min.css">
 </head>
 
 <body>
@@ -24,10 +27,10 @@
                 </div>
             </div>
             <div class="columns">
-				<div class="column is-half">
-					<input class="input" placeholder="Name" v-model="newBookmark.name" />
-			    </div>
-			</div>
+                <div class="column is-half">
+                    <input class="input" placeholder="Name" v-model="newBookmark.name" />
+                </div>
+            </div>
             <div class="columns">
                 <div class="column">
                     <input class="input" type="url" placeholder="Insert bookmark" v-model="newBookmark.url">
@@ -35,10 +38,11 @@
                 <div class="column">
                     <button class="button" v-on:click="addBookmark()">New</button>
                 </div>
-            </div>   
+            </div>
             <ul id="bookmarks" v-for="(item, index) in sortedBookmarks">
                 <li>
-                    <a v-bind:href="item.url" target="_blank" class="has-tooltip-bottom" v-bind:data-tooltip="item.category">{{ item.name ? item.name : item.url }}</a>
+                    <a v-bind:href="item.url" target="_blank" class="has-tooltip-bottom"
+                        v-bind:data-tooltip="item.category">{{ item.name ? item.name : item.url }}</a>
                     <a class="delete" v-on:click="deleteBookmark(index)"></a>
                 </li>
             </ul>
@@ -49,39 +53,65 @@
             el: '#app',
             data: {
                 bookmarks: [],
-                newBookmark: {}
+                newBookmark: {},
+                password: null
             },
             computed: {
-                sortedBookmarks: function() {
+                sortedBookmarks: function () {
                     function compare(a, b) {
-						[a, b].forEach(function(obj) {
-  							['category', 'name', 'url'].forEach(item => { 
-    							if(obj[item] === undefined) {
-      								obj[item] = '';
-    							}
-  							});
-						});
-                    	return a.category.localeCompare(b.category) || a.name.localeCompare(b.name) || a.url.localeCompare(b.url);
+                        [a, b].forEach(function (obj) {
+                            ['category', 'name', 'url'].forEach(item => {
+                                if (obj[item] === undefined) {
+                                    obj[item] = '';
+                                }
+                            });
+                        });
+                        return a.category.localeCompare(b.category) || a.name.localeCompare(b.name) || a.url.localeCompare(b.url);
                     }
 
                     return this.bookmarks.sort(compare);
                 }
             },
             mounted: function () {
-                 if (localStorage["bookmarks"]) {
-                    this.bookmarks = JSON.parse(localStorage["bookmarks"]);
+                if (localStorage["password"]) {
+                    this.password = localStorage["password"];
                 } else {
-                    localStorage.setItem("bookmarks", []);
+                    Swal.fire({
+                        title: 'Enter your password',
+                        input: 'password',
+                        inputPlaceholder: 'Enter your password',
+                        showCancelButton: false,
+                        showCloseButton: false,
+                        allowOutsideClick: false,
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'Password cannot be empty!'
+                            }
+                        },
+                        inputAttributes: {
+                            maxlength: 10,
+                            autocapitalize: 'off',
+                            autocorrect: 'off'
+                        }
+                    }).then((result) => {
+                        this.password = result.value;
+                    });
+                }
+
+                if (localStorage["bookmarks"]) {
+                    this.bookmarks = JSON.parse(sjcl.decrypt(this.password, localStorage["bookmarks"]));
+                } else {
+                    localStorage.setItem("bookmarks", sjcl.decrypt(this.password, []));
                 }
             },
             methods: {
                 addBookmark: function () {
                     this.bookmarks.push(Object.assign({}, this.newBookmark));
-                    localStorage.setItem("bookmarks", JSON.stringify(this.bookmarks));
+                    localStorage.setItem("bookmarks", sjcl.encrypt(this.password, JSON.stringify(this.bookmarks)));
                 },
                 deleteBookmark: function (index) {
                     this.bookmarks.splice(index, 1);
-                    localStorage.setItem("bookmarks", JSON.stringify(this.bookmarks));
+                    localStorage.setItem("bookmarks", scjl.decrypt(JSON.stringify(this.bookmarks)));
                 }
             }
         });
