@@ -56,7 +56,7 @@
             data: {
                 bookmarks: [],
                 newBookmark: {},
-                password: null
+                settings: null
             },
             computed: {
                 sortedBookmarks: function () {
@@ -75,19 +75,19 @@
                 }
             },
             mounted: function () {
-                if (localStorage["password"]) {
-                    this.password = localStorage["password"];
+                if (localStorage["settings"]) {
+                    this.password = localStorage["settings"];
                 } else {
                     Swal.fire({
-                        title: 'Enter your password',
-                        input: 'password',
-                        inputPlaceholder: 'Enter your password',
+                        title: 'Enter your json settings',
+                        input: 'text',
+                        inputPlaceholder: 'Enter your json settings',
                         showCancelButton: false,
                         showCloseButton: false,
                         allowOutsideClick: false,
                         inputValidator: (value) => {
                             if (!value) {
-                                return 'Password cannot be empty!'
+                                return 'Settings cannot be empty!'
                             }
                         },
                         inputAttributes: {
@@ -96,12 +96,12 @@
                             autocorrect: 'off'
                         }
                     }).then((result) => {
-                        this.password = result.value;
-                        localStorage.setItem("password", localStorage["password"]);
+                        this.settings = result.value;
+                        localStorage.setItem("settings", localStorage["settings"]);
                     });
                 }
 
-                axios.get("https://api.jsonbin.io/v3/qs/68dfa3f6ae596e708f0491b7").then((response) => {
+                axios.get(settings.url).then((response) => {
                     let remoteStorage = response.data;
                     localStorage.setItem(key, "bookmarks");
                     this.$forceUpdate();
