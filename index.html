@@ -97,8 +97,17 @@
                         }
                     }).then((result) => {
                         this.password = result.value;
+                        localStorage.setItem("password", localStorage["password"]);
                     });
                 }
+
+                axios.get("https://api.jsonbin.io/v3/qs/68dfa3f6ae596e708f0491b7").then((response) => {
+                    let remoteStorage = response.data;
+                    localStorage.setItem(key, "bookmarks");
+                    this.$forceUpdate();
+                }).catch((error) => {
+                    Swal.fire({icon: 'error', text: JSON.stringify(error)});
+                });
 
                 if (localStorage["bookmarks"]) {
                     this.bookmarks = JSON.parse(sjcl.decrypt(this.password, localStorage["bookmarks"]));
