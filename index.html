@@ -76,7 +76,7 @@
             },
             mounted: function () {
                 if (localStorage["settings"]) {
-                    this.settings = localStorage["settings"];
+                    this.settings = JSON.parse(localStorage["settings"]);
 
                     this.downloadBookmarks();
                 } else {
@@ -98,7 +98,7 @@
                         }
                     }).then((result) => {
                         this.settings = JSON.parse(result.value);
-                        localStorage.setItem("settings", this.settings);
+                        localStorage.setItem("settings", JSON.stringify(this.settings));
 
                         this.downloadBookmarks();
                     });
@@ -109,12 +109,12 @@
             methods: {
                 addBookmark: function () {
                     this.bookmarks.push(Object.assign({}, this.newBookmark));
-                    localStorage.setItem("bookmarks", this.bookmarks);
+                    // localStorage.setItem("bookmarks", this.bookmarks);
                     this.uploadBookmarks();
                 },
                 deleteBookmark: function (index) {
                     this.bookmarks.splice(index, 1);
-                    localStorage.setItem("bookmarks", this.bookmarks);
+                    // localStorage.setItem("bookmarks", this.bookmarks);
                     this.uploadBookmarks();
                 },
                 downloadBookmarks: function () {
@@ -126,7 +126,7 @@
                         }
                     }).then((response) => {
                         this.bookmarks = JSON.parse(sjcl.decrypt(this.password, response.data));
-                        localStorage.setItem("bookmarks", this.bookmarks);
+                        // localStorage.setItem("bookmarks", this.bookmarks);
                         this.$forceUpdate();
                     }).catch((error) => {
                         Swal.fire({ icon: 'error', text: JSON.stringify(error) });
