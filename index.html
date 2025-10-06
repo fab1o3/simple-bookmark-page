@@ -96,28 +96,13 @@
                         }
                     }).then((result) => {
                         this.settings = result.value;
-                        localStorage.setItem("settings", localStorage["settings"]);
+                        localStorage.setItem("settings", this.settings);
+
+                        this.download();
                     });
                 }
 
-                axios.get(this.settings.url, {
-                    auth: this.settings.credentials,
-                    headers: {
-                        'Authorization': `Basic ${btoa(this.settings.credentials.username + ':' + this.settings.credentials.password)}`,
-                    }
-                }).then((response) => {
-                    let remoteStorage = response.data;
-                    localStorage.setItem(key, "bookmarks");
-                    this.$forceUpdate();
-                }).catch((error) => {
-                    Swal.fire({ icon: 'error', text: JSON.stringify(error) });
-                });
-
-                if (localStorage["bookmarks"]) {
-                    this.bookmarks = JSON.parse(sjcl.decrypt(this.password, localStorage["bookmarks"]));
-                } else {
-                    localStorage.setItem("bookmarks", sjcl.decrypt(this.password, []));
-                }
+                
             },
             methods: {
                 addBookmark: function () {
@@ -128,7 +113,27 @@
                     this.bookmarks.splice(index, 1);
                     localStorage.setItem("bookmarks", scjl.decrypt(JSON.stringify(this.bookmarks)));
                 },
-                sync: function () {
+                download: function () {
+                    axios.get(this.settings.url, {
+                        auth: this.settings.credentials,
+                        headers: {
+                            'Authorization': `Basic ${btoa(this.settings.credentials.username + ':' + this.settings.credentials.password)}`,
+                        }
+                    }).then((response) => {
+                        let remoteStorage = response.data;
+                        localStorage.setItem(key, "bookmarks");
+                        this.$forceUpdate();
+                    }).catch((error) => {
+                        Swal.fire({ icon: 'error', text: JSON.stringify(error) });
+                    });
+
+                    if (localStorage["bookmarks"]) {
+                        this.bookmarks = JSON.parse(sjcl.decrypt(this.password, localStorage["bookmarks"]));
+                    } else {
+                        localStorage.setItem("bookmarks", sjcl.decrypt(this.password, []));
+                    }
+                },
+                upload: function () {
                     axios.put(this.settings.url, sjcl.encrypt(this.password, JSON.stringify(this.bookmarks)), {
                     auth: this.settings.credentials,
                     headers: {
