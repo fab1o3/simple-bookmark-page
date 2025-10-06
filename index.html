@@ -109,12 +109,12 @@
             methods: {
                 addBookmark: function () {
                     this.bookmarks.push(Object.assign({}, this.newBookmark));
-                    localStorage.setItem("bookmarks", sjcl.encrypt(this.password, JSON.stringify(this.bookmarks)));
+                    localStorage.setItem("bookmarks", this.bookmarks);
                     this.uploadBookmarks();
                 },
                 deleteBookmark: function (index) {
                     this.bookmarks.splice(index, 1);
-                    localStorage.setItem("bookmarks", scjl.decrypt(JSON.stringify(this.bookmarks)));
+                    localStorage.setItem("bookmarks", this.bookmarks);
                     this.uploadBookmarks();
                 },
                 downloadBookmarks: function () {
@@ -125,30 +125,24 @@
                             'Access-Control-Allow-Origin': '*'
                         }
                     }).then((response) => {
-                        this.bookmarks = response.data;
+                        this.bookmarks = JSON.parse(sjcl.decrypt(this.password, response.data));
                         localStorage.setItem("bookmarks", this.bookmarks);
                         this.$forceUpdate();
                     }).catch((error) => {
                         Swal.fire({ icon: 'error', text: JSON.stringify(error) });
                     });
-
-                    if (localStorage["bookmarks"]) {
-                        this.bookmarks = JSON.parse(sjcl.decrypt(this.password, localStorage["bookmarks"]));
-                    } else {
-                        localStorage.setItem("bookmarks", sjcl.decrypt(this.password, []));
-                    }
                 },
                 uploadBookmarks: function () {
                     axios.put(this.settings.url, sjcl.encrypt(this.password, JSON.stringify(this.bookmarks)), {
-                    auth: this.settings.credentials,
-                    headers: {
-                        'Authorization': `Basic ${btoa(settings.credentials.username + ':' + settings.credentials.password)}`,
-                    }
-                }).then((response) => {
+                        auth: this.settings.credentials,
+                        headers: {
+                            'Authorization': `Basic ${btoa(settings.credentials.username + ':' + settings.credentials.password)}`,
+                        }
+                    }).then((response) => {
 
-                }).catch((error) => {
-                    Swal.fire({ icon: 'error', text: JSON.stringify(error) });
-                });
+                    }).catch((error) => {
+                        Swal.fire({ icon: 'error', text: JSON.stringify(error) });
+                    });
                 }
             }
         });
