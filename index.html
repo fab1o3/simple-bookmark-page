@@ -77,7 +77,8 @@
             mounted: function () {
                 if (localStorage["settings"]) {
                     this.settings = localStorage["settings"];
-                    this.download();
+
+                    this.downloadBookmarks();
                 } else {
                     Swal.fire({
                         title: 'Enter your json settings',
@@ -99,7 +100,7 @@
                         this.settings = JSON.parse(result.value);
                         localStorage.setItem("settings", this.settings);
 
-                        this.download();
+                        this.downloadBookmarks();
                     });
                 }
 
@@ -109,18 +110,19 @@
                 addBookmark: function () {
                     this.bookmarks.push(Object.assign({}, this.newBookmark));
                     localStorage.setItem("bookmarks", sjcl.encrypt(this.password, JSON.stringify(this.bookmarks)));
-                    this.upload();
+                    this.uploadBookmarks();
                 },
                 deleteBookmark: function (index) {
                     this.bookmarks.splice(index, 1);
                     localStorage.setItem("bookmarks", scjl.decrypt(JSON.stringify(this.bookmarks)));
-                    this.upload();
+                    this.uploadBookmarks();
                 },
-                download: function () {
+                downloadBookmarks: function () {
                     axios.get(this.settings.url, {
                         auth: this.settings.credentials,
                         headers: {
                             'Authorization': `Basic ${btoa(this.settings.credentials.username + ':' + this.settings.credentials.password)}`,
+                            'Access-Control-Allow-Origin': '*'
                         }
                     }).then((response) => {
                         this.bookmarks = response.data;
@@ -136,7 +138,7 @@
                         localStorage.setItem("bookmarks", sjcl.decrypt(this.password, []));
                     }
                 },
-                upload: function () {
+                uploadBookmarks: function () {
                     axios.put(this.settings.url, sjcl.encrypt(this.password, JSON.stringify(this.bookmarks)), {
                     auth: this.settings.credentials,
                     headers: {
