@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sjcl@1.0.8/sjcl.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.12.2/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.23.0/dist/sweetalert2.all.min.js"></script>
-    
+
 </head>
 
 <body>
@@ -76,7 +76,7 @@
             },
             mounted: function () {
                 if (localStorage["settings"]) {
-                    this.password = localStorage["settings"];
+                    this.settings = localStorage["settings"];
                 } else {
                     Swal.fire({
                         title: 'Enter your json settings',
@@ -91,7 +91,6 @@
                             }
                         },
                         inputAttributes: {
-                            maxlength: 10,
                             autocapitalize: 'off',
                             autocorrect: 'off'
                         }
@@ -101,12 +100,17 @@
                     });
                 }
 
-                axios.get(settings.url).then((response) => {
+                axios.get(this.settings.url, {
+                    auth: this.settings.credentials,
+                    headers: {
+                        'Authorization': `Basic ${btoa(this.settings.credentials.username + ':' + this.settings.credentials.password)}`,
+                    }
+                }).then((response) => {
                     let remoteStorage = response.data;
                     localStorage.setItem(key, "bookmarks");
                     this.$forceUpdate();
                 }).catch((error) => {
-                    Swal.fire({icon: 'error', text: JSON.stringify(error)});
+                    Swal.fire({ icon: 'error', text: JSON.stringify(error) });
                 });
 
                 if (localStorage["bookmarks"]) {
@@ -123,6 +127,18 @@
                 deleteBookmark: function (index) {
                     this.bookmarks.splice(index, 1);
                     localStorage.setItem("bookmarks", scjl.decrypt(JSON.stringify(this.bookmarks)));
+                },
+                sync: function () {
+                    axios.put(this.settings.url, sjcl.encrypt(this.password, JSON.stringify(this.bookmarks)), {
+                    auth: this.settings.credentials,
+                    headers: {
+                        'Authorization': `Basic ${btoa(settings.credentials.username + ':' + settings.credentials.password)}`,
+                    }
+                }).then((response) => {
+
+                }).catch((error) => {
+                    Swal.fire({ icon: 'error', text: JSON.stringify(error) });
+                });
                 }
             }
         });
